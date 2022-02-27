@@ -39,7 +39,7 @@ void RequestSender::connToServer()
 		currConnection = WinHttpConnect
 		(
 			currSession,
-			L"192.168.0.33",
+			L"192.168.4.119",
 			80,
 			0
 		);
@@ -95,9 +95,9 @@ void RequestSender::receiveResponse()
 {
 	DWORD sizeOfData = 0;
 	// if ending request was a success
-	if(!stepSuccessful)
+	if (!stepSuccessful)
 	{
-		std::cout << "Error " << GetLastError() << " occured." << std::endl;
+		;
 	}
 	else
 	do
@@ -122,11 +122,11 @@ void RequestSender::receiveResponse()
 
 			if (!WinHttpReadData(currRequest, (LPVOID)responseReceived, sizeOfData, &downloaded))
 			{
-				std::cout << "Error " << GetLastError() << " encountered" << std::endl;
+				;
 			}
 			else
 			{
-				std::cout << responseReceived << std::endl;
+				;
 			}
 			// freeing memory allocated to buffer
 			delete[] responseReceived;
